@@ -1,5 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,linux,macos,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,linux,macos,python
+### Added by me ###
+egs/
 
 ### Linux ###
 *~
