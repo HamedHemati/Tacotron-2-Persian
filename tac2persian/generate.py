@@ -3,9 +3,37 @@ import numpy as np
 import librosa
 import argparse
 from tac2persian.utils.generic import load_config
+from tac2persian.utils.g2p.g2p import Grapheme2Phoneme
+from tac2persian.models.tacotron2 import Tacotron2
 from tac2persian.models.wavernn import WaveRNN
+from tac2persian.utils.g2p.char_list import char_list as char_list_g2p
 
 
+# ========== Tacotron
+def get_tacotron(config_path, checkpoint_path, device):
+    # Init model
+    params_tacotron= load_config(config_path)
+    params_tacotron["num_chars"] = len(char_list_g2p)
+    tacotron = Tacotron2(**params_tacotron).to(device)
+
+    # Load checkpoint
+    state_dict = torch.load(checkpoint_path, map_location=lambda storage, loc: storage)
+    tacotron.load_state_dict(state_dict)
+    print("Loaded Tacotron checkpoint.")
+
+    return tacotron, params_tacotron
+
+
+def get_melspec(tacotron, params_tacotron, g2p, input_text, lang, spk_id, device):
+    inp_chars = torch.tensor(g2p.text_to_sequence(input_text, language=lang)).long().to(device)
+    # Feed inputs to the models
+    postnet_outputs, attn_weights = tacotron.generate(inp_chars, spk_id)
+    mel = postnet_outputs.T
+    
+    return mel, attn_weights
+
+
+# ========== WaveRNN
 def get_wavernn(config_path, checkpoint_path, device):
     # Init model
     params_wavernn = load_config(config_path)
@@ -36,7 +64,10 @@ def main(args):
     print(f"Device: {device}")
     
     # Tacotron
-    melspec = None
+    tacotron, params_tacotron = get_tacotron(args.tacotron_config_path, args.tacotron_checkpoint_path, device)
+    g2p = Grapheme2Phoneme()
+    spk_id = None
+    melspec, attn_weights = get_melspec(tacotron, params_tacotron, g2p, args.inp_text, args.lang, spk_id, device)
     
     # WaveRNN
     wavernn, params_wavernn = get_wavernn(args.wavernn_config_path, args.wavernn_checkpoint_path, device)
@@ -50,6 +81,8 @@ if __name__ == "__main__":
     parser.add_argument("--wavernn_checkpoint_path", type=str)
     parser.add_argument("--tacotron_config_path", type=str)
     parser.add_argument("--tacotron_checkpoint_path", type=str)
+    parser.add_argument("--inp_text", type=str)
+    parser.add_argument("--lang", default="fa", type=str)
     parser.add_argument("--output_path", type=str)
     args = parser.parse_args()
 
