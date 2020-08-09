@@ -24,7 +24,7 @@ def get_tacotron(config_path, checkpoint_path, device):
     return tacotron, params_tacotron
 
 
-def get_melspec(tacotron, params_tacotron, g2p, input_text, lang, spk_id, device):
+def generate_melspec(tacotron, params_tacotron, g2p, input_text, lang, spk_id, device):
     inp_chars = torch.tensor(g2p.text_to_sequence(input_text, language=lang)).long().to(device)
     # Feed inputs to the models
     postnet_outputs, attn_weights = tacotron.generate(inp_chars, spk_id)
@@ -55,6 +55,7 @@ def generate_wav(wavernn, params_wavernn, melspec):
     return out_wav
 
 
+# ========== Main
 def main(args):
     # Set device
     if torch.cuda.is_available():
@@ -63,16 +64,17 @@ def main(args):
         device = torch.device('cpu')
     print(f"Device: {device}")
     
-    # Tacotron
+    # Generate melspec
     tacotron, params_tacotron = get_tacotron(args.tacotron_config_path, args.tacotron_checkpoint_path, device)
     g2p = Grapheme2Phoneme()
     spk_id = None
-    melspec, attn_weights = get_melspec(tacotron, params_tacotron, g2p, args.inp_text, args.lang, spk_id, device)
+    melspec, attn_weights = generate_melspec(tacotron, params_tacotron, g2p, args.inp_text, args.lang, spk_id, device)
     
-    # WaveRNN
+    # Generate waveform
     wavernn, params_wavernn = get_wavernn(args.wavernn_config_path, args.wavernn_checkpoint_path, device)
     out_wav = generate_wav(wavernn, params_wavernn, melspec)
     librosa.output.write_wav("outputs/sample.wav", out_wav, params_wavernn["audio"]["sample_rate"])
+
 
 if __name__ == "__main__":
     # Parse Arguments
