@@ -470,3 +470,20 @@ class Decoder(nn.Module):
         return postnet_outputs, stop_values, attn_weights
 
 
+# ====================================== Functions
+def pad_mask(mel_lens, r):
+    max_len = max(mel_lens)
+    remainder = max_len % r
+    pad_len = max_len + (r - remainder) if remainder > 0 else max_len
+    mask = [np.ones(( mel_lens[i]), dtype=bool) for i in range(len(mel_lens))]
+    mask = np.stack([_pad_array(x, pad_len) for x in mask])
+    return torch.tensor(mask)
+
+
+def _pad_array(x, length):
+    _pad = 0
+    x = np.pad(
+        x, [[0, length - x.shape[0]]],
+        mode='constant',
+        constant_values=False)
+    return x

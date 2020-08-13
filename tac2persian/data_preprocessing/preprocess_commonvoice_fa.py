@@ -30,14 +30,18 @@ def compute_features(source_audio_path,
         text = normalize_text(text)
         out_mel_path = os.path.join(out_melspecs_path, file_name + ".npy")
         phoneme = g2p.text_to_phone(text, language="fa")
+        phoneme_idx = g2p.phone_to_sequence(phoneme)
+        phoneme_idx = ','.join(map(str, phoneme_idx))
         audio, _ = librosa.core.load(source_audio_path, sr=config["mel_params"]["sample_rate"])
         audio = trim_silence(audio, config["ref_level_db"])
         melspec = log_melspectrogram(audio, **config["mel_params"])
         np.save(out_mel_path, melspec)
-        meta_line = f"{file_name}|{speaker_name}|{text}|{phoneme}"
+        meta_line = f"{file_name}|{speaker_name}|{text}|{phoneme}|{melspec.shape[1]}|{phoneme_idx}"
+        
         return meta_line
     except:
         print(f"Error in processing {file_name}")
+        
         return None
 
 def preprocess(dataset_path, output_path, target_speakers, config, num_workers):
@@ -57,19 +61,20 @@ def preprocess(dataset_path, output_path, target_speakers, config, num_workers):
         all_lines_final[speaker] = [(l[1], l[2]) for l in all_lines if l[0]==speaker]
 
     executor = ProcessPoolExecutor(max_workers=num_workers)
+    
     # Create metafile and copy files
     metafile = []
     for itr_spk, speaker in enumerate(all_lines_final.keys()):
         speaker_name = f"speaker_fa_{itr_spk}"
         
         # Create final directory
-        out_melspecs_path = os.path.join(output_path, "melspecs", speaker_name)
+        out_melspecs_path = os.path.join(output_path, "melspecs")
         os.makedirs(out_melspecs_path, exist_ok=True)
         print(f"Preprocessing files for speaker {itr_spk}/{len(all_lines_final.keys())}")
         lines = all_lines_final[speaker]
         count_files = len(lines)
 
-        for itr, line in enumerate(lines):
+        for itr, line in enumerate(lines[:20]):
             file_name, text = line
             file_name_ = speaker_name + "_" + file_name.split(".")[0]
             source_audio_path = os.path.join(dataset_path, "clips", file_name)
@@ -86,6 +91,7 @@ def preprocess(dataset_path, output_path, target_speakers, config, num_workers):
 
     metafile = [metaline.result() for metaline in metafile if metaline is not None]
     print(metafile)
+    
     # Write metafile
     with open(os.path.join(output_path, "metadata.txt"), "w") as final_meta:
         for l in metafile:

@@ -21,6 +21,7 @@ class Tacotron2(nn.Module):
         # ----------------- Encoder and decoder
         self.encoder = Encoder(self.params)
         self.decoder = Decoder(self.params, encoder_out_dim)
+        self.set_reduction_factor(self.params["max_reduction_factor"])
     
         # ----------------- Step buffer
         self.register_buffer("step", torch.zeros(1, dtype=torch.long))
@@ -32,7 +33,7 @@ class Tacotron2(nn.Module):
 
     def forward(self, 
                 inp_chars, 
-                len_chars, 
+                chars_len, 
                 mels, 
                 mel_len, 
                 spk_ids):
@@ -40,7 +41,7 @@ class Tacotron2(nn.Module):
             self.step += 1    
 
         # Feed input chars to the encoder
-        encoder_outputs = self.encoder(inp_chars, len_chars)
+        encoder_outputs = self.encoder(inp_chars, chars_len)
         
         # Concatenate speaker embedding
         if self.params["use_spk_emb"]:

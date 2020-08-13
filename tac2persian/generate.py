@@ -65,10 +65,18 @@ def main(args):
     print(f"Device: {device}")
     
     # Generate melspec
-    tacotron, params_tacotron = get_tacotron(args.tacotron_config_path, args.tacotron_checkpoint_path, device)
+    tacotron, params_tacotron = get_tacotron(args.tacotron_config_path, 
+                                             args.tacotron_checkpoint_path, 
+                                             device)
     g2p = Grapheme2Phoneme()
     spk_id = None
-    melspec, attn_weights = generate_melspec(tacotron, params_tacotron, g2p, args.inp_text, args.lang, spk_id, device)
+    melspec, attn_weights = generate_melspec(tacotron, 
+                                             params_tacotron, 
+                                             g2p, 
+                                             args.inp_text, 
+                                             args.lang, 
+                                             spk_id, 
+                                             device)
     
     # Generate waveform
     wavernn, params_wavernn = get_wavernn(args.wavernn_config_path, args.wavernn_checkpoint_path, device)
