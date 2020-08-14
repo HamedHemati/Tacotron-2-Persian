@@ -2,11 +2,13 @@ import torch
 import numpy as np
 import librosa
 import argparse
+import os
 from tac2persian.utils.generic import load_config
 from tac2persian.utils.g2p.g2p import Grapheme2Phoneme
 from tac2persian.models.tacotron2 import Tacotron2
 from tac2persian.models.wavernn import WaveRNN
 from tac2persian.utils.g2p.char_list import char_list as char_list_g2p
+from tac2persian.utils.plot import plot_attention, plot_spectrogram
 
 
 # ========== Tacotron
@@ -81,8 +83,19 @@ def main(args):
     # Generate waveform
     wavernn, params_wavernn = get_wavernn(args.wavernn_config_path, args.wavernn_checkpoint_path, device)
     out_wav = generate_wav(wavernn, params_wavernn, melspec)
-    librosa.output.write_wav("outputs/sample.wav", out_wav, params_wavernn["audio"]["sample_rate"])
+    
+    # Save wave
+    wav_path = os.path.join(args.output_path, args.filename + ".wav")
+    librosa.output.write_wav(wav_path, out_wav, params_wavernn["audio"]["sample_rate"])
 
+    # Save attention
+    attn_path = os.path.join(args.output_path, args.filename + "_attn")
+    plot_attention(attn_weights, attn_path)
+
+    # Save melspec
+    melspec_path = os.path.join(args.output_path, args.filename + "_mel")
+    plot_spectrogram(melspec, melspec_path)
+    
 
 if __name__ == "__main__":
     # Parse Arguments
@@ -94,6 +107,7 @@ if __name__ == "__main__":
     parser.add_argument("--inp_text", type=str)
     parser.add_argument("--lang", default="fa", type=str)
     parser.add_argument("--output_path", type=str)
+    parser.add_argument("--filename", type=str)
     args = parser.parse_args()
 
     main(args)
