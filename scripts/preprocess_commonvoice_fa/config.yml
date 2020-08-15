@@ -1,0 +1,13 @@
+mel_params:
+  sample_rate: 22050            # sampling rate.
+  num_mels: 80                  # size of the mel spec frame.
+  n_fft: 2048                   # number of stft frequency levels. Size of the linear spectogram frame.
+  win_length: 1024              # stft window length.
+  hop_length: 275               # stft window hop-lengh.
+  mel_fmin: 0                   # minimum freq level for mel-spec basis extraction. ~50 for male and ~95 for female voices. Tune for dataset!!
+  mel_fmax: 8000.0              # maximum freq level for mel-spec basis extraction.
+  window: "hann"
+  pad_mode: "reflect"
+
+trim_margin_silence: True    # trim silence at the beginning and and end of sound file (prefered value: False)  
+ref_level_db: 20              # reference level db, theoretically 20db is the sound of air.
