@@ -5,13 +5,17 @@
 
 <strong>Visit <a href="https://hamedhemati.github.io/Tacotron-2-Persian-Demo/">this demo page</a> to listen to some audio samples</strong>
 
-This repository contains implementation of a Persian Tacotron model with its trainer and a dataset preprocessor. For generating better quality audios, the acoustic features (mel-spectrogram) are fed to a WaveRNN model, therefore I've included a WaveRNN vocoder only for infernece (no trainer included).
+This repository contains implementation of a Persian Tacotron model in `PyTorch` with a dataset preprocessor for Common Voice. For generating better quality audios, the acoustic features (mel-spectrogram) are fed to a WaveRNN model, therefore I've included a WaveRNN vocoder only for infernece (no trainer included).
 
 The source code in this repository is highly inspired by and partially copied (and modified) from the following repostories:<br>
 
 Tacotron model: https://github.com/espnet/espnet <br>
 WaveRNN and some utils: https://github.com/mozilla/TTS <br>
 
+### Model specs:<br>
+***Encoder*** : CNN layers with batch-norm and a bi-directional lstm on top.<br>
+***Decoder***: 2 LSTMs for the recurrent part and a post-net on top.<br>
+***Attention type***: GMM v2 with k=25.
 
 ## Datasets
 The model is trained on audio files from one of the speakers in `Common Voice Persian` which can be downloaded from the link below:
@@ -20,7 +24,7 @@ https://commonvoice.mozilla.org/en/datasets
 Unfortunately, only a few number of speakers in the dataset have enough number of utterances for training a Tacotron model and most of the audio files have low quality and are noisy. I found audio files from one of the speakers more approriate for training whose speaker id is hard-coded in the `commonvoice_fa` preprocessor.
 
 ### Data preprocessing
-After downloading the dataset, first set setting `DATASET_PATH` and `DATASET_PATH` variables in the file `scripts/preprocess/preprocess_commonvoice_fa.sh` and then run
+After downloading the dataset, first set `DATASET_PATH` and `DATASET_PATH` variables in the file `scripts/preprocess/preprocess_commonvoice_fa.sh` and then run:
 ```
 sh scripts/preprocess/preprocess_commonvoice_fa.sh
 ```
