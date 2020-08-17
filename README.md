@@ -5,9 +5,9 @@
 
 <strong>Visit <a href="https://hamedhemati.github.io/Tacotron-2-Persian-Demo/">this demo page</a> to listen to some audio samples</strong>
 
-This repository contains implementation of a Persian Tacotron model in `PyTorch` with a dataset preprocessor for Common Voice. For generating better quality audios, the acoustic features (mel-spectrogram) are fed to a WaveRNN model, therefore I've included a WaveRNN vocoder only for infernece (no trainer included).
+This repository contains implementation of a Persian Tacotron model in `PyTorch` with a dataset preprocessor for the Common Voice dataset. For generating better quality audios, the acoustic features (mel-spectrogram) are fed to a WaveRNN model. I've included WaveRNN model in the code only for infernece purposes (no trainer included).
 
-The source code in this repository is highly inspired by and partially copied (and modified) from the following repostories:<br>
+The source code in this repository is highly inspired by and partially copied (and also modified) from the following repostories:<br>
 
 Tacotron model: https://github.com/espnet/espnet <br>
 WaveRNN and some utils: https://github.com/mozilla/TTS <br>
@@ -28,8 +28,8 @@ After downloading the dataset, first set `DATASET_PATH` and `DATASET_PATH` varia
 ```
 sh scripts/preprocess/preprocess_commonvoice_fa.sh
 ```
-This will features required for training the model and will create a meta file that contains transcripts and phonemization of each transcript in individual lines along with other meta info.<br>
-Finally, you need to create two files named `metadata_train.txt` and `metadata_eval.txt` out of `metadata.txt`. First get number of lines in the transcript file with `wc -l metadata.txt`, then if for example there is 10000 lines in the metadata file you can split it with as below:<br>
+This will extract features required for training the model and will create a meta file that contains transcripts and phonemization of each transcript in individual lines along with other meta info.<br>
+Finally, you will need to create two files named `metadata_train.txt` and `metadata_eval.txt` out of `metadata.txt`. First get number of lines in the transcript file with `wc -l metadata.txt`, then if for example there is 10000 lines in the metadata file you can split it with as below:<br>
 ```
 shuf metadata.txt >> medata_shuf.txt
 head -n 9000 metadata_shuf.txt > metadata_train.txt
@@ -46,7 +46,7 @@ sh scripts/tacotron2persian_commonvoice_fa/train.sh
 ```
 
 ### Inference
-Once the model training is finished, you can generated audio after setting the variables in `generate.sh` as below:
+Once the model training is finished, you can generate audio after setting the variables in `generate.sh` as below:
 
 ```
 sh scripts/tacotron2persian_commonvoice_fa/generate.sh
