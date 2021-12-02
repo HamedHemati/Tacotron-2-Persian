@@ -9,8 +9,8 @@ OUTPUT_PATH="./outputs"
 
 LANG="fa"
 
- INP_TEXT="صاحب قصر زنی بود با لباس‌هایِ بسیار مجلل و خدم و حشمِ فراوان که به گرمی از مسافرین پذیرایی کرد."
- FILENAME="sahebe_ghasr"
+INP_TEXT="صاحب قصر زنی بود با لباس‌هایِ بسیار مجلل و خدم و حشمِ فراوان که به گرمی از مسافرین پذیرایی کرد."
+FILENAME="sahebe_ghasr"
 
 
 python -m tac2persian.generate --wavernn_config_path="$WAVERNN_CONFIG_PATH"\
