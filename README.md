@@ -31,7 +31,7 @@ sh scripts/preprocess/preprocess_commonvoice_fa.sh
 This will extract features required for training the model and will create a meta file that contains transcripts and phonemization of each transcript in individual lines along with other meta info.<br>
 Finally, you will need to create two files named `metadata_train.txt` and `metadata_eval.txt` out of `metadata.txt`. First get number of lines in the transcript file with `wc -l metadata.txt`, then if for example there is 10000 lines in the metadata file you can split it with as below:<br>
 ```
-shuf metadata.txt >> medata_shuf.txt
+shuf metadata.txt >> metadata_shuf.txt
 head -n 9000 metadata_shuf.txt > metadata_train.txt
 tail -n 1000 metadata_shuf.txt > metadata_eval.txt
 ```
