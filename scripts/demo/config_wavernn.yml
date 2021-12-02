@@ -1,0 +1,21 @@
+# Model params
+upsample_factors: [5, 5, 11]      # This needs to correctly factorise hop_length: 5 x 5 x 11 = 275
+rnn_dims: 1024
+fc_dims: 1024
+compute_dims: 256
+res_out_dims: 256
+res_blocks: 15
+use_upsample_net: True
+use_aux_net: True
+voc_mode: "MOL"                  # Mixture of Logistics (Discrete)
+pad: 2
+
+# Synthesis
+target: 11000                    # Target number of samples to be generated in each batch entry
+overlap: 550                     # Number of samples for crossfading between batches
+
+# Audio params
+audio:
+  sample_rate: 22050             # Sampling rate.
+  num_mels: 80                   # Size of the mel spec frame. 
+  hop_length: 275                # Stft window hop-lengh.

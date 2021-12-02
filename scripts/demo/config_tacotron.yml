@@ -1,0 +1,33 @@
+# Model parameters 
+# - Encoder
+enc_emb_dim: 512              # Embedding output dimension
+enc_num_conv_layers: 3        # Number of convolutional layers,
+enc_conv_batchnorm: True      # Set true to use batchnorm in the convolutional layers
+enc_conv_residual: True       # Set true to use residual connection in conv layers
+enc_conv_channels: 512        # Convolution output channels,
+enc_conv_kernel_size: 5       # Kernel size of convolution layers
+enc_conv_dropout_rate: 0.5    # Dropout rate of convolution layers
+enc_blstm_hidden_size: 512    # Number of encoder blstm hidden units (encoder's output size)
+enc_blstm_num_layers: 1       # Number of encoder blstm layers
+# - Decoder
+dec_num_prenet_layers: 2 
+dec_prenet_hidden_size: 256
+dec_num_lstm_layers: 2
+dec_lstm_hidden_size: 1024
+dec_num_postnet_layers: 5
+dec_postnet_conv_channels: 512
+dec_postnet_conv_kernel_size: 5
+dec_zoneout_rate: 0.1
+dec_dropout_rate: 0.5
+dec_batch_norm: True
+dec_out_dim: 80
+# - Speaker embedding and style vectors
+use_spk_emb: False 
+spk_emb_size: 0
+num_spk: 0
+# - Attention
+attn_type: "gmmv2"
+# --- Attention: gmmv2
+attn_gmm_k: 25   
+# - Reduction factor
+max_reduction_factor: 2
