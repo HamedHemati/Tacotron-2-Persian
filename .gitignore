@@ -2,7 +2,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,linux,macos,python
 ### Added by me ###
 egs/
-outputs/
 
 ### Linux ###
 *~
