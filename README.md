@@ -24,9 +24,9 @@ https://commonvoice.mozilla.org/en/datasets
 Unfortunately, only a few number of speakers in the dataset have enough number of utterances for training a Tacotron model and most of the audio files have low quality and are noisy. I found audio files from one of the speakers more approriate for training whose speaker id is hard-coded in the `commonvoice_fa` preprocessor.
 
 ### Data preprocessing
-After downloading the dataset, first set `DATASET_PATH` and `DATASET_PATH` variables in the file `scripts/preprocess/preprocess_commonvoice_fa.sh` and then run:
+After downloading the dataset, first set `DATASET_PATH` and `DATASET_PATH` variables in the file `scripts/preprocess_commonvoice_fa/preprocess_commonvoice_fa.sh` and then run:
 ```
-sh scripts/preprocess/preprocess_commonvoice_fa.sh
+sh scripts/preprocess_commonvoice_fa/preprocess_commonvoice_fa.sh
 ```
 This will extract features required for training the model and will create a meta file that contains transcripts and phonemization of each transcript in individual lines along with other meta info.<br>
 Finally, you will need to create two files named `metadata_train.txt` and `metadata_eval.txt` out of `metadata.txt`. First get number of lines in the transcript file with `wc -l metadata.txt`, then if for example there is 10000 lines in the metadata file you can split it with as below:<br>
